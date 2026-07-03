@@ -1,0 +1,102 @@
+.vec-quote-tracker {
+    max-width: 760px;
+    margin: 1.5rem auto;
+    border: 1px solid #e1e1e1;
+    border-radius: 12px;
+    padding: 1.5rem;
+    background: #fff;
+}
+
+.vec-quote-tracker__form {
+    display: grid;
+    gap: 1rem;
+}
+
+.vec-quote-tracker__field-group {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 0.75rem;
+}
+
+.vec-quote-tracker__label {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+.vec-quote-tracker__input {
+    width: 100%;
+    padding: 0.85rem 1rem;
+    border: 1px solid #ccd0d4;
+    border-radius: 8px;
+    font-size: 1rem;
+}
+
+.vec-quote-tracker__button {
+    min-width: 150px;
+    padding: 0.85rem 1rem;
+    font-size: 1rem;
+    border-radius: 8px;
+}
+
+.vec-quote-tracker__error {
+    color: #b71c1c;
+    background: #ffebee;
+    border: 1px solid #f8bbd0;
+    border-radius: 8px;
+    padding: 0.85rem 1rem;
+}
+
+.vec-quote-tracker__result {
+    margin-top: 1.5rem;
+    padding: 1.25rem;
+    background: #fafafa;
+    border-radius: 12px;
+    border: 1px solid #e8e8e8;
+}
+
+.vec-quote-tracker__grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.vec-quote-tracker__item {
+    padding: 1rem;
+    background: #fff;
+    border: 1px solid #e1e1e1;
+    border-radius: 10px;
+}
+
+.vec-quote-tracker__label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
+    color: #5f6368;
+}
+
+.vec-quote-tracker__value {
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: #111;
+}
+
+.vec-quote-tracker__details {
+    margin-top: 1.5rem;
+    padding: 1rem;
+    background: #fff;
+    border-radius: 10px;
+    border: 1px solid #e1e1e1;
+    overflow-x: auto;
+}
+
+@media (max-width: 768px) {
+    .vec-quote-tracker__field-group {
+        grid-template-columns: 1fr;
+    }
+
+    .vec-quote-tracker__grid {
+        grid-template-columns: 1fr;
+    }
+}
