@@ -6,6 +6,7 @@ namespace VictoriaERPConnector\API;
 use WP_Error;
 use WP_REST_Request;
 use WP_REST_Response;
+use VictoriaERPConnector\API\Endpoints;
 
 /**
  * Class Api
@@ -60,6 +61,10 @@ final class Api {
                 'permission_callback' => [ $this, 'permission_check_write' ],
             ]
         );
+
+        if ( class_exists( Endpoints::class ) ) {
+            Endpoints::register();
+        }
     }
 
     /**

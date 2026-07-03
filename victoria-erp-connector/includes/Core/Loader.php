@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace VictoriaERPConnector\Core;
 
+use VictoriaERPConnector\Cron\SyncScheduler;
 use VictoriaERPConnector\Plugin_Bootstrap;
 
 /**
@@ -74,6 +75,36 @@ final class Loader {
         if (class_exists(\VictoriaERPConnector\Admin\Admin::class)) {
             $this->admin = new \VictoriaERPConnector\Admin\Admin();
             add_action('admin_menu', [$this, 'register_admin_pages']);
+        }
+
+        // Initialize WooCommerce integration hooks if present.
+        if ( class_exists( \VictoriaERPConnector\WooCommerce\Stock::class ) ) {
+            \VictoriaERPConnector\WooCommerce\Stock::register_hooks();
+        }
+
+        if ( class_exists( \VictoriaERPConnector\WooCommerce\Pricing::class ) ) {
+            \VictoriaERPConnector\WooCommerce\Pricing::register_hooks();
+        }
+
+        if ( class_exists( \VictoriaERPConnector\WooCommerce\ProductSync::class ) ) {
+            \VictoriaERPConnector\WooCommerce\ProductSync::register_hooks();
+        }
+
+        if ( class_exists( \VictoriaERPConnector\WooCommerce\PromotionEngine::class ) ) {
+            \VictoriaERPConnector\WooCommerce\PromotionEngine::register_hooks();
+        }
+
+        if ( class_exists( \VictoriaERPConnector\WooCommerce\MyAccount::class ) ) {
+            \VictoriaERPConnector\WooCommerce\MyAccount::register_hooks();
+        }
+
+        if ( class_exists( \VictoriaERPConnector\Shortcodes\QuoteTracker::class ) ) {
+            \VictoriaERPConnector\Shortcodes\QuoteTracker::register_hooks();
+        }
+
+        if ( class_exists( SyncScheduler::class ) ) {
+            SyncScheduler::register_hooks();
+            SyncScheduler::ensure_schedules();
         }
     }
 

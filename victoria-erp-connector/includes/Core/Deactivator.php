@@ -20,6 +20,10 @@ final class Deactivator {
     private static array $cron_hooks = [
         'vec_sync_stock',
         'vec_sync_pricing',
+        'vec_as_refresh_products',
+        'vec_as_retry_failed_requests',
+        'vec_as_cleanup_logs',
+        'vec_as_manual_sync',
     ];
 
     /**
@@ -28,6 +32,10 @@ final class Deactivator {
      * @return void
      */
     public static function deactivate(): void {
+        if ( class_exists( '\VictoriaERPConnector\Cron\SyncScheduler' ) ) {
+            \VictoriaERPConnector\Cron\SyncScheduler::clear_schedules();
+        }
+
         if ( function_exists( 'wp_clear_scheduled_hook' ) ) {
             foreach ( self::$cron_hooks as $hook ) {
                 wp_clear_scheduled_hook( $hook );

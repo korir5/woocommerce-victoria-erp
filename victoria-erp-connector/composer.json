@@ -1,6 +1,15 @@
 {
   "name": "korir5/victoria-erp-connector",
-  "description": "WooCommerce integration with Victoria ERP",
+  "description": "WooCommerce integration with Victoria ERP.",
   "type": "wordpress-plugin",
-  "require": {}
+  "license": "GPL-2.0-or-later",
+  "version": "1.0.0",
+  "require": {
+    "php": ">=8.2"
+  },
+  "autoload": {
+    "psr-4": {
+      "VictoriaERPConnector\\": "includes/"
+    }
+  }
 }

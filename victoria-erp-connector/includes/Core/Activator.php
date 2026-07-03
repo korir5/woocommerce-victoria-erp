@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace VictoriaERPConnector\Core;
 
+use VictoriaERPConnector\Cron\SyncScheduler;
+
 /**
  * Class Activator
  *
@@ -24,9 +26,16 @@ final class Activator {
      */
     private static function default_options(): array {
         return [
-            'api_url'     => '',
-            'api_key'     => '',
-            'enable_sync' => false,
+            'base_url'             => '',
+            'company_code'         => '',
+            'api_timeout'          => 15,
+            'enable_logging'       => false,
+            'enable_stock_sync'    => false,
+            'enable_price_sync'    => false,
+            'enable_product_sync'  => false,
+            'enable_promotion_engine' => false,
+            'promotion_rules'      => '',
+            'api_key'              => '',
         ];
     }
 
@@ -43,6 +52,11 @@ final class Activator {
             add_option( self::OPTION_NAME, $defaults );
         }
 
+        if ( class_exists( SyncScheduler::class ) ) {
+            SyncScheduler::ensure_schedules();
+            return;
+        }
+
         // Schedule recurring tasks if scheduling functions are available.
         if ( function_exists( 'wp_next_scheduled' ) && function_exists( 'wp_schedule_event' ) ) {
             if ( ! wp_next_scheduled( 'vec_sync_stock' ) ) {
@@ -51,6 +65,10 @@ final class Activator {
 
             if ( ! wp_next_scheduled( 'vec_sync_pricing' ) ) {
                 wp_schedule_event( time(), 'daily', 'vec_sync_pricing' );
+            }
+
+            if ( ! wp_next_scheduled( 'vec_as_refresh_products' ) ) {
+                wp_schedule_event( time(), 'daily', 'vec_as_refresh_products' );
             }
         }
 
