@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace VictoriaERPConnector\WooCommerce;
 
 use VictoriaERPConnector\API\ERPClient;
+use VictoriaERPConnector\Cron\SyncScheduler;
 use Throwable;
 
 /**
@@ -20,6 +21,7 @@ final class Stock {
     public static function register_hooks(): void {
         // Background sync hook (cron or manual trigger).
         add_action( 'vec_background_stock_sync', [ self::class, 'background_sync_handler' ] );
+        add_action( SyncScheduler::STOCK_JOB, [ self::class, 'background_sync_handler' ] );
         add_action( 'vec_sync_stock', [ self::class, 'background_sync_handler' ] );
 
         // Expose a lightweight trigger for on-demand syncs.
@@ -48,6 +50,47 @@ final class Stock {
         }
 
         self::sync_stock_full( $product_ids );
+    }
+
+    /**
+     * Handle incoming webhook payloads from ERP stock updates.
+     *
+     * @param mixed $payload
+     * @return bool True when the stock update payload was handled.
+     */
+    public static function handle_webhook( mixed $payload ): bool {
+        if ( ! is_array( $payload ) ) {
+            return false;
+        }
+
+        if ( ! empty( $payload['sku'] ) ) {
+            $sku = trim( (string) $payload['sku'] );
+            if ( $sku !== '' ) {
+                return self::sync_stock_for_sku( $sku );
+            }
+        }
+
+        self::background_sync_handler();
+        return true;
+    }
+
+    /**
+     * Synchronize stock for a single SKU.
+     *
+     * @param string $sku
+     * @return bool
+     */
+    private static function sync_stock_for_sku( string $sku ): bool {
+        if ( ! function_exists( 'wc_get_product_id_by_sku' ) || ! function_exists( 'wc_get_product' ) ) {
+            return false;
+        }
+
+        $product_id = wc_get_product_id_by_sku( $sku );
+        if ( ! $product_id ) {
+            return false;
+        }
+
+        return self::sync_stock_full( [ $product_id ] ) > 0;
     }
 
     /**

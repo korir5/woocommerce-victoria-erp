@@ -47,7 +47,7 @@ final class Plugin_Bootstrap {
      *
      * @var string
      */
-    public const VERSION = '0.1.0';
+    public const VERSION = '1.0.0';
 
     /**
      * PSR-4 namespace prefix used by this plugin.

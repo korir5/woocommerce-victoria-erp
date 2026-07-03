@@ -75,12 +75,13 @@ final class Api {
      */
     public function status( WP_REST_Request $request ): WP_REST_Response|WP_Error {
         $settings = get_option( 'vec_settings', [] );
+        $safe_settings = is_array( $settings ) ? self::filter_status_settings( $settings ) : [];
 
         return rest_ensure_response(
             [
                 'ok'       => true,
                 'version'  => defined( '\VictoriaERPConnector\Plugin_Bootstrap::VERSION' ) ? \VictoriaERPConnector\Plugin_Bootstrap::VERSION : 'unknown',
-                'settings' => is_array( $settings ) ? $settings : [],
+                'settings' => $safe_settings,
             ]
         );
     }
@@ -93,7 +94,7 @@ final class Api {
      */
     public function sync_stock( WP_REST_Request $request ): WP_REST_Response|WP_Error {
         if ( class_exists( '\VictoriaERPConnector\WooCommerce\Stock' ) ) {
-            \VictoriaERPConnector\WooCommerce\Stock::sync_stock();
+            \VictoriaERPConnector\WooCommerce\Stock::sync_stock_full();
 
             return rest_ensure_response( [ 'ok' => true, 'message' => 'Stock sync started' ] );
         }
@@ -123,7 +124,7 @@ final class Api {
      * @return bool True when the current user may read plugin status.
      */
     public function permission_check_read(): bool {
-        return current_user_can( 'manage_options' ) || is_user_logged_in();
+        return current_user_can( 'manage_options' );
     }
 
     /**
@@ -133,5 +134,27 @@ final class Api {
      */
     public function permission_check_write(): bool {
         return current_user_can( 'manage_woocommerce' ) || current_user_can( 'manage_options' );
+    }
+
+    /**
+     * Filter settings values returned by the status endpoint to avoid exposing secrets.
+     *
+     * @param array<string,mixed> $settings
+     * @return array<string,mixed>
+     */
+    private static function filter_status_settings( array $settings ): array {
+        $allowed_keys = [
+            'base_url',
+            'company_code',
+            'api_timeout',
+            'enable_logging',
+            'enable_stock_sync',
+            'enable_price_sync',
+            'enable_product_sync',
+            'enable_promotion_engine',
+            'promotion_rules',
+        ];
+
+        return array_intersect_key( $settings, array_flip( $allowed_keys ) );
     }
 }

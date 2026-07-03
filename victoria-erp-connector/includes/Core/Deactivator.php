@@ -18,8 +18,8 @@ final class Deactivator {
      * @var string[]
      */
     private static array $cron_hooks = [
-        'vec_sync_stock',
-        'vec_sync_pricing',
+        'vec_as_refresh_stock',
+        'vec_as_refresh_prices',
         'vec_as_refresh_products',
         'vec_as_retry_failed_requests',
         'vec_as_cleanup_logs',

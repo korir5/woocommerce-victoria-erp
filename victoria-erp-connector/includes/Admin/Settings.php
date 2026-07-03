@@ -200,7 +200,7 @@ final class Settings {
 
     public static function field_api_key(): void {
         $opts = self::get_options();
-        printf('<input type="text" id="vec_api_key" name="%1$s[api_key]" value="%2$s" class="regular-text">', esc_attr( self::OPTION_NAME ), esc_attr( $opts['api_key'] ?? '' ) );
+        printf('<input type="password" id="vec_api_key" name="%1$s[api_key]" value="%2$s" class="regular-text">', esc_attr( self::OPTION_NAME ), esc_attr( $opts['api_key'] ?? '' ) );
     }
 
     public static function field_enable_logging(): void {

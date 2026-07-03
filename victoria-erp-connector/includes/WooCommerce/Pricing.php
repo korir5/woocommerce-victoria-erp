@@ -30,6 +30,10 @@ final class Pricing {
      * @return void
      */
     public static function background_sync_handler(): void {
+        if ( ! self::is_enabled() ) {
+            return;
+        }
+
         self::sync_pricing();
     }
 
@@ -39,7 +43,7 @@ final class Pricing {
      * @return int Number of products or variations updated.
      */
     public static function sync_pricing(): int {
-        if ( ! function_exists( 'wc_get_products' ) || ! function_exists( 'wc_get_product' ) ) {
+        if ( ! self::is_enabled() || ! function_exists( 'wc_get_products' ) || ! function_exists( 'wc_get_product' ) ) {
             return 0;
         }
 

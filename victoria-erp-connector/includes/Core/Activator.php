@@ -54,21 +54,17 @@ final class Activator {
 
         if ( class_exists( SyncScheduler::class ) ) {
             SyncScheduler::ensure_schedules();
-            return;
-        }
-
-        // Schedule recurring tasks if scheduling functions are available.
-        if ( function_exists( 'wp_next_scheduled' ) && function_exists( 'wp_schedule_event' ) ) {
-            if ( ! wp_next_scheduled( 'vec_sync_stock' ) ) {
-                wp_schedule_event( time(), 'hourly', 'vec_sync_stock' );
+        } elseif ( function_exists( 'wp_next_scheduled' ) && function_exists( 'wp_schedule_event' ) ) {
+            if ( ! wp_next_scheduled( SyncScheduler::STOCK_JOB ) ) {
+                wp_schedule_event( time(), 'hourly', SyncScheduler::STOCK_JOB );
             }
 
-            if ( ! wp_next_scheduled( 'vec_sync_pricing' ) ) {
-                wp_schedule_event( time(), 'daily', 'vec_sync_pricing' );
+            if ( ! wp_next_scheduled( SyncScheduler::PRICING_JOB ) ) {
+                wp_schedule_event( time(), 'daily', SyncScheduler::PRICING_JOB );
             }
 
-            if ( ! wp_next_scheduled( 'vec_as_refresh_products' ) ) {
-                wp_schedule_event( time(), 'daily', 'vec_as_refresh_products' );
+            if ( ! wp_next_scheduled( SyncScheduler::PRODUCT_JOB ) ) {
+                wp_schedule_event( time(), 'daily', SyncScheduler::PRODUCT_JOB );
             }
         }
 
